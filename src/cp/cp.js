@@ -7,9 +7,7 @@ const __dirname = dirname(__filename);
 
 const spawnChildProcess = async (args) => {
     // Write your code here
-    const child = spawn('node', [path.resolve(__dirname, "files", "script.js"), ...args], {
-        stdio: [process.stdin, process.stdout, process.stderr, 'ipc']
-    });
+    const child = spawn('node', [path.resolve(__dirname, "files", "script.js"), ...args]);
 
     // listen for input from stdin
     process.stdin.on('data', (data) => {
