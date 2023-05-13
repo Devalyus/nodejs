@@ -1,0 +1,25 @@
+{
+  "name": "crud_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start:dev": "nodemon ./src/index.js --ignore *.test.js",
+    "start:prod": "webpack --config webpack.config.js && node ./dist/main.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "webpack": "^5.82.1",
+    "webpack-cli": "^5.1.1"
+  }
+}
