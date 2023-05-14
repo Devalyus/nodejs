@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
+const cluster = require("cluster");
 
 class Database {
   constructor() {
@@ -26,7 +27,9 @@ class Database {
     const id = uuidv4();
     user.id = id;
     this.data.push(user);
-    this.notifyMasterAboutUpdate()
+    if (cluster.isWorker) {
+      this.notifyMasterAboutUpdate();
+    }
     return user;
   }
 
@@ -39,7 +42,9 @@ class Database {
     record.age = user.age;
     record.username = user.username;
     record.hobbies = user.hobbies;
-    this.notifyMasterAboutUpdate();
+    if (cluster.isWorker) {
+      this.notifyMasterAboutUpdate();
+    }
     return record;
   }
 
@@ -49,7 +54,9 @@ class Database {
       throw new Error("User does not exist");
     }
     this.data.splice(index, 1);
-    this.notifyMasterAboutUpdate()
+    if (cluster.isWorker) {
+      this.notifyMasterAboutUpdate();
+    }
     return { message: "Success" };
   }
 }

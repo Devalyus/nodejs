@@ -1,5 +1,6 @@
 require("dotenv").config();
 const http = require("http");
+const cluster = require("cluster");
 const { validate } = require("uuid");
 const { validateData } = require("./utils/validateData");
 const { errors, httpMethods } = require("./constants/constants");
@@ -8,17 +9,13 @@ const { Database } = require("./db");
 const port = process.env.PORT || 3000;
 
 const db = new Database();
-const server = http.createServer((req, res) => {
-  process.on("uncaughtException", (err) => {
-    res.statusCode = 500;
-    res.end(
-      JSON.stringify({
-        message: ErrorMessages.unexpected_error,
-      })
-    );
+
+if (cluster.isWorker) {
+  process.on("message", (msg) => {
+    db.setData(msg.data);
   });
-
-
+}
+const server = http.createServer((req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   if (req.url === "/api/users" && req.method === httpMethods.GET) {
@@ -26,7 +23,7 @@ const server = http.createServer((req, res) => {
     res.statusCode = 200;
     res.end(data);
   } else if (
-    req.url?.startsWith("/api/users/") &&
+    req.url.startsWith("/api/users/") &&
     req.method === httpMethods.GET
   ) {
     const id = req.url?.substring(11);
@@ -67,7 +64,7 @@ const server = http.createServer((req, res) => {
       }
     });
   } else if (
-    req.url?.startsWith("/api/users/") &&
+    req.url.startsWith("/api/users/") &&
     req.method === httpMethods.PUT
   ) {
     const id = req.url?.substring(11);
@@ -106,7 +103,7 @@ const server = http.createServer((req, res) => {
       }
     });
   } else if (
-    req.url?.startsWith("/api/users/") &&
+    req.url.startsWith("/api/users/") &&
     req.method === httpMethods.DELETE
   ) {
     const id = req.url?.substring(11);
@@ -126,9 +123,17 @@ const server = http.createServer((req, res) => {
       }
     }
   } else {
-    res.statusCode = 404
-    res.end({message: "404 Not Found"})
+    res.statusCode = 404;
+    res.end(JSON.stringify({ message: "404 Not Found" }));
   }
+  process.on("uncaughtException", (err) => {
+    res.statusCode = 500;
+    res.end(
+      JSON.stringify({
+        message: errors.unexpected_error,
+      })
+    );
+  });
 });
 
 server.listen(port, () => {
