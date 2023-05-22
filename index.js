@@ -1,10 +1,10 @@
 import { httpServer } from "./src/http_server/index.js";
-import { mouse, left, right, up, down, Button } from "@nut-tree/nut-js";
+import { mouse, left, right, up, down } from "@nut-tree/nut-js";
 import { WebSocketServer } from "ws";
-import { drawCircle } from "./src/http_server/circle.js";
-import { drawRectangle } from "./src/http_server/rectangle.js";
-import { drawSquare } from "./src/http_server/square.js";
-import { takeScreenshot } from "./src/http_server/screenshot.js";
+import { drawCircle } from "./src/circle.js";
+import { drawRectangle } from "./src/rectangle.js";
+import { drawSquare } from "./src/square.js";
+import { takeScreenshot } from "./src/screenshot.js";
 
 const HTTP_PORT = 8080;
 
